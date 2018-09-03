@@ -1,5 +1,14 @@
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
-ARG ./target/trucker-api-1.0.0.jar
-COPY ${JAR_FILE} api.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/api.jar"]
+COPY ./target/trucker-api-1.0.0.jar /api.jar
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod 755 /docker-entrypoint.sh
+
+WORKDIR /
+
+EXPOSE 8080
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
+CMD [ "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /api.jar" ]
